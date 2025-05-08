@@ -68,8 +68,12 @@ WSGI_APPLICATION = 'bmclub.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'badminton.db',#'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'bmclub',#'db.sqlite3',
+        'USER': 'bmclub_user',
+        'PASSWORD': 'ILB5smFmtBhqIFyKLcR16c2MnCgOSlJr',
+        'HOST': 'dpg-d0edk415pdvs73b12kkg-a',  # or IP address
+        'PORT': '5432',      
     }
 }
 
