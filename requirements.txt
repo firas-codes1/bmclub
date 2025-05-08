@@ -1,3 +1,4 @@
 django
 gunicorn
 uvicorn
+psycopg2-binary
