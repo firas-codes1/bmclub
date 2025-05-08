@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Planner - Tournament Management System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+     <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-trophy me-2"></i>Game Planner
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Registration Form -->
+    <div class="container">
+        <div class="register-container">
+            <div class="register-header">
+                <h2>Create Your Account</h2>
+                <p class="text-muted">Join Game Planner to manage or participate in tournaments</p>
+            </div>
+            
+            <!-- User Type Selection -->
+            <div class="user-type-selector">
+                <div class="user-type-btn active" data-user-type="player">
+                    <i class="fas fa-user"></i>
+                    <p>Player</p>
+                </div>
+                <div class="user-type-btn" data-user-type="organizer">
+                    <i class="fas fa-users"></i>
+                    <p>Organizer</p>
+                </div>
+                <div class="user-type-btn" data-user-type="referee">
+                    <i class="fas fa-whistle"></i>
+                    <p>Referee</p>
+                </div>
+            </div>
+            
+            <!-- Registration Form -->
+            <form>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" placeholder="Enter your first name" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" required>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Create a password" required>
+                    <small class="text-muted">Minimum 8 characters with at least one number</small>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+                
+                <!-- Player-specific fields (shown by default) -->
+                <div id="player-fields">
+                    <div class="mb-3">
+                        <label for="sport" class="form-label">Primary Sport</label>
+                        <select class="form-select" id="sport">
+                            <option selected>Select your sport</option>
+                            <option value="badminton">Badminton</option>
+                            <option value="tennis">Tennis</option>
+                            <option value="table-tennis">Table Tennis</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="skill-level" class="form-label">Skill Level</label>
+                        <select class="form-select" id="skill-level">
+                            <option selected>Select your skill level</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="professional">Professional</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Organizer-specific fields (hidden by default) -->
+                <div id="organizer-fields" style="display: none;">
+                    <div class="mb-3">
+                        <label for="organization" class="form-label">Organization Name</label>
+                        <input type="text" class="form-control" id="organization" placeholder="Enter your organization name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="website" class="form-label">Website (optional)</label>
+                        <input type="url" class="form-control" id="website" placeholder="Enter your website URL">
+                    </div>
+                </div>
+                
+                <!-- Referee-specific fields (hidden by default) -->
+                <div id="referee-fields" style="display: none;">
+                    <div class="mb-3">
+                        <label for="certification" class="form-label">Certification Number</label>
+                        <input type="text" class="form-control" id="certification" placeholder="Enter your certification number">
+                    </div>
+                    <div class="mb-3">
+                        <label for="years-experience" class="form-label">Years of Experience</label>
+                        <input type="number" class="form-control" id="years-experience" placeholder="Enter years of experience">
+                    </div>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="terms" required>
+                    <label class="form-check-label" for="terms">I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a></label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100">Create Account</button>
+                
+                <div class="text-center mt-3">
+                    <p>Already have an account? <a href="login.html" class="text-decoration-none">Sign in</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="mb-0">&copy; 2023 Game Planner. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // User type selection
+        const userTypeBtns = document.querySelectorAll('.user-type-btn');
+        const playerFields = document.getElementById('player-fields');
+        const organizerFields = document.getElementById('organizer-fields');
+        const refereeFields = document.getElementById('referee-fields');
+        
+        userTypeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                userTypeBtns.forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Show/hide fields based on selection
+                const userType = this.getAttribute('data-user-type');
+                
+                playerFields.style.display = 'none';
+                organizerFields.style.display = 'none';
+                refereeFields.style.display = 'none';
+                
+                if (userType === 'player') {
+                    playerFields.style.display = 'block';
+                } else if (userType === 'organizer') {
+                    organizerFields.style.display = 'block';
+                } else if (userType === 'referee') {
+                    refereeFields.style.display = 'block';
+                }
+            });
+        });
+        
+        // Password strength indicator (could be enhanced)
+        const passwordInput = document.getElementById('password');
+        passwordInput.addEventListener('input', function() {
+            // Add password strength logic here if needed
+        });
+    </script>
+</body>
+</html>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+     <script src="../js/script.js"></script>
+</body>
+</html>

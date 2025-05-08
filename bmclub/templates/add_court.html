@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><title>Add Court</title></head>
+<body>
+    <h2>Add Court</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: green;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add</button>
+    </form>
+
+<ul>
+    {% for court in courts %}
+        <li>{{ court.court }}</li>
+    {% empty %}
+        <li>No courts added yet.</li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>

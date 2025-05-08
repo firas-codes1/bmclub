@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Tournament Players</title>
+    <style>
+        .player-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 8px;
+            border-radius: 5px;
+            display: inline-block;
+            width: 200px;
+            text-align: center;
+        }
+        .player-box button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Players for {{ tournament.tournament_name }}</h1>
+
+    <h2>Approved Players</h2>
+    <div>
+        {% for player in players %}
+            <div class="player-box">
+                <p>{{ player.user.get_full_name|default:player.user.username }}</p>
+<a href="../remove_player/{{tournament.id}}/{{player.id}}">  <button type="submit">Remove</button> </a>
+            </div>
+        {% empty %}
+            <p>No approved players.</p>
+        {% endfor %}
+    </div>
+
+    <h2>Players On Hold</h2>
+    <div>
+        {% for player in playershold %}
+            <div class="player-box">
+                <p>{{ player.user.get_full_name|default:player.user.username }}</p>
+
+                   <a href="../approve_player/{{tournament.id}}/{{player.id}}"> <button type="submit">Approve</button> </a>
+
+                  <a href="../remove_player/{{tournament.id}}/{{player.id}}">  <button type="submit">Remove</button> </a>
+                
+            </div>
+        {% empty %}
+            <p>No players on hold.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

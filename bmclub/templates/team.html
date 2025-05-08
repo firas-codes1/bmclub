@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Profile</title>
+</head>
+<body>
+    <h1>{{ team.name }} Team Profile</h1>
+
+<h2> Total wins: {{team.TotalWins}} </h2>
+<h2> Total scores: {{team.TotalScores}} </h2>
+
+    <h2>Players:</h2>
+    <ul>
+        {% for player in players %}
+            <li>{{ player.user.first_name }} {{ player.user.last_name }} ({{ player.category }})</li>
+        {% empty %}
+            <li>No players in this team yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Matches Played:</h2>
+    <ul>
+        {% for match in matches_played %}
+            <li>{{ match.team1.name }} vs {{ match.team2.name  }} - Result: {% if match.winner == team %}Won{% else %}Lost{% endif %}</li>
+        {% empty %}
+            <li>No matches played yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Matches Won:</h2>
+    <ul>
+        {% for match in matches_won %}
+            <li>{{ match.team1.name }} vs {{ match.team2.name }} - Winner: {{ match.winner }}</li>
+        {% empty %}
+            <li>No matches won yet.</li>
+        {% endfor %}
+    </ul>
+<h4> Team ID: {{team.id}} </h4>
+
+<a href="../editteam/{{team.id}}"><button> Edit team</button></a>
+</body>
+</html>

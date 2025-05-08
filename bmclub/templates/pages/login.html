@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Planner - Tournament Management System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <!-- <link rel="stylesheet" href="../css/style.css"> -->
+{% load statics %}    
+<link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-trophy me-2"></i>Game Planner
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registration.html">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <div class="container">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Welcome Back!</h2>
+                <p class="text-muted">Please sign in to access your account</p>
+            </div>
+            
+            <!-- Social Login Options 
+            <div class="social-login mb-4">
+                <a href="#" class="btn btn-outline-primary">
+                    <i class="fab fa-google"></i> Continue with Google
+                </a>
+                <a href="#" class="btn btn-outline-primary mt-2">
+                    <i class="fab fa-facebook-f"></i> Continue with Facebook
+                </a>
+            </div>             -->
+            
+            <!-- Divider -->
+            <div class="divider">
+                <span class="divider-text">OR</span>
+            </div>
+            
+<form method="POST" novalidate>
+	{% csrf_token %}
+	<h2>Login</h2>
+	{{form.as_p}}
+	<input type="submit" value="Login" /> </form>
+
+            <!-- Email Login Form 
+            <form>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                    <div class="text-end mt-2">
+                        <a href="forgot-password.html" class="text-decoration-none">Forgot password?</a>
+                    </div>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember">
+                    <label class="form-check-label" for="remember">Remember me</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>                     
+-->
+            
+            <div class="text-center mt-3">
+                <p>Don't have an account? <a href="registration.html" class="text-decoration-none">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="mb-0">&copy; 2023 Game Planner. All rights reserved.</p>
+        </div>
+    </footer>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS
+     <script src="../js/script.js"></script> -->
+
+</body>
+</html>

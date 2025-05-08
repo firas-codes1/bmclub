@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Tournaments</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .tournament-list {
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .tournament-item {
+            display: block;
+            background-color: #f0f0f0;
+            padding: 12px;
+            margin: 10px 0;
+            text-decoration: none;
+            color: #333;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+        .tournament-item:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="tournament-list">
+        <h2>Your Tournaments</h2>
+        {% if tors %}
+            {% for tour in tors %}
+                <a class="tournament-item" href="../tourchange/{{tour.id}}">
+                    {{ tour.tournament_name }} - {{ tour.location }} ({{ tour.date|date:"M d, Y" }})
+                </a>
+            {% endfor %}
+        {% else %}
+            <p>You haven’t created any tournaments yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

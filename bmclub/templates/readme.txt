@@ -1,0 +1,1 @@
+The login.html in registration folder is important for cases where a user that isn't logged in accesses a login only page. 

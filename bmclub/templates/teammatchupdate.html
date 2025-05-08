@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Match Detail</title>
+</head>
+<body>
+    <h1>Match Details</h1>
+
+    <h2>Teams</h2>
+    <p><strong>Team 1:</strong> {{ matchinfo.player1.user.first_name }} {{ matchinfo.player1.user.last_name }}</p>
+    <p><strong>Score:</strong> {{ matchinfo.player1Score }}</p>
+
+    <p><strong>Player 2:</strong> {{ matchinfo.player2.user.first_name }} {{ matchinfo.player2.user.last_name }}</p>
+    <p><strong>Score:</strong> {{ matchinfo.player2Score }}</p>
+
+    <h3>Tournament</h3>
+    <p>{{ matchinfo.tournament.tournament_name }} - {{ matchinfo.tournament.location }}</p>
+
+    <h3>Referee</h3>
+    <p>{{ matchinfo.ref.first_name }} {{ matchinfo.ref.last_name }}</p>
+
+    {% if matchinfo.player2wins==2  %}
+        <h3>Winner</h3>
+        <p>{{ matchinfo.player2.user.first_name }} {{ matchinfo.player2.user.last_name }}</p>
+{% elif matchinfo.player1wins==2 %}
+        <h3>Winner</h3>
+        <p>{{ matchinfo.player1.user.first_name }} {{ matchinfo.player1.user.last_name }}</p>
+
+    {% else %}
+        <h3>No winner yet.</h3>
+<h2> {{ matchinfo.player1.user.first_name }} {{ matchinfo.player1.user.last_name }} - {{matchinfo.player1wins}} </h2>
+    
+{% endif %}
+
+    <!-- Score Buttons -->
+    <a href="/matchupdate/{{ matchinfo.id }}/1/1/"><button>+1 for Team 1 (Player 1)</button></a>
+    <a href="/matchupdate/{{ matchinfo.id }}/1/2"><button>+1 for Team 1 (Player 2)</button></a>
+    <a href="/matchupdate/{{ matchinfo.id }}/2/1"><button>+1 for team 2 (Player 1)</button></a>
+    <a href="/matchupdate/{{ matchinfo.id }}/2/2"><button>+1 for team 2 (Player 2)</button></a> <!--{{matchinfo.team1.player1}}/ to get the name -->
+
+    <br><br>
+    <a href="/">Back to Home</a>
+</body>
+</html>

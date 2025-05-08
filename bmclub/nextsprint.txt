@@ -1,0 +1,12 @@
+Add search functionality (for players and teams) (firas/hassan)
+Enhance user interface (hassan)
+Improve navigation (hassan)
+make each match 2 games (add duration to games) (firas)
+-What is shcedueling?
+-What graphs contain? 
+-who gets the email notification of a won match?
+-editing through graphs directly (hassan/firas) 
+
+-Add round wins to all_matches instead of player score 
+-Show player/team id in viewing 
+-in adding new matches and tournaments, the expected input players/teams should be the name of player/team maybe?

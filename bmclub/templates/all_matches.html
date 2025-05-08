@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Match Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                display: none;
+            }
+            td {
+                position: relative;
+                padding-left: 50%;
+                text-align: left;
+                border: none;
+                border-bottom: 1px solid #eee;
+            }
+            td::before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+          /*  td:nth-of-type(1)::before { content: "Player 1 Name"; }
+            td:nth-of-type(2)::before { content: "Player 1 Score"; }
+            td:nth-of-type(3)::before { content: "Player 2 Name"; }
+            td:nth-of-type(4)::before { content: "Player 2 Score"; }
+            td:nth-of-type(5)::before { content: "Referee"; }
+            td:nth-of-type(6)::before { content: "Tournament"; }
+            td:nth-of-type(7)::before { content: "Winner"; }
+       */ }
+    </style>
+</head>
+<body>
+    {% if True %}
+    <h2>Singles Matches</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Player 1</th>
+                <th>Player 1 Score</th>
+                <th>Player 2</th>
+                <th>Player 2 Score</th>
+                <th>Referee</th>
+                <th>Tournament</th>
+                <th>Winner</th>
+<th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for playermatch in singles_matches %}
+<a href="matchupdate/{{playermatch.id}}">
+            <tr>
+                <td>{{ playermatch.player1.user.first_name }} {{ playermatch.player1.user.last_name }}</td>
+                <td>{{ playermatch.player1Score }}</td>
+                <td>{{ playermatch.player2.user.first_name }} {{ playermatch.player2.user.last_name }}</td>
+                <td>{{ playermatch.player2Score }}</td>
+                <td>
+                    {% if playermatch.ref %}
+                        {{ playermatch.ref.first_name }} {{ playermatch.ref.last_name }}
+                    {% else %}
+                        No referee assigned
+                    {% endif %}
+                </td>
+                <td>{{ playermatch.tournament.tournament_name }}</td>
+                <td>
+                    {% if playermatch.player1wins %}
+                        {{ playermatch.player1wins.user.first_name }} {{ playermatch.player1wins.user.last_name }}
+                    {% elif playermatch.player2wins %}
+                        {{ playermatch.player2wins.user.first_name }} {{ playermatch.player2wins.user.last_name }}
+                    {% else %}
+                        Draw / Not Decided
+                    {% endif %}
+                </td>
+<td><a href="../matchupdate/{{playermatch.id}}"><button>View</button></a></td>
+            </tr> </a>
+            {% endfor %}
+
+
+    {% else %}
+        <p>No singles matches yet.</p>
+    {% endif %}
+
+        </tbody>
+    </table>
+
+
+
+    {% if True %}
+    <h2>Doubles Matches</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Team 1</th>
+                <th>Team 1 Score</th>
+                <th>Team 2</th>
+                <th>Team 2 Score</th>
+                <th>Referee</th>
+                <th>Tournament</th>
+                <th>Winner</th>
+<th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+
+{% for teammatch in doubles_matches %}
+<a href="matchupdate/{{teammatch.id}}">
+<tr>
+    <td>{{ teammatch.team1.name }}</td>
+    <td>{{ teammatch.team1Score }}</td>
+    <td>{{ teammatch.team2.name }}</td>
+    <td>{{ teammatch.team2Score }}</td>
+    <td>
+        {% if teammatch.ref %}
+            {{ teammatch.ref.first_name }} {{ teammatch.ref.last_name }}
+        {% else %}
+            No referee assigned
+        {% endif %}
+    </td>
+    <td>{{ teammatch.tournament.tournament_name }}</td>
+    <td>
+        {% if teammatch.team1wins %}
+            {{ teammatch.team1wins.name }}
+        {% elif teammatch.team2wins %}
+            {{ teammatch.team2wins.name }}
+        {% else %}
+            Draw / Not Decided
+        {% endif %}
+                </td>
+<td><a href="../matchupdate/{{teammatch.id}}"><button>View</button></a></td>
+            </tr> </a>
+            {% endfor %}
+
+    {% endif %}
+        </tbody>
+    </table>
+</body>
+</html>

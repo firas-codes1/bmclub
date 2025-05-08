@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Player Rankings</title>
+</head>
+<body>
+    <h1>🏆 Player Rankings</h1>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Total Wins</th>
+                <th>Total Scores</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in page_obj %}
+            <tr>
+                <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+                <td>{{ player.user.username }}</td>
+                <td>{{ player.TotalWins }}</td>
+                <td>{{ player.TotalScores }}</td>
+                <td>{{ player.get_category_display }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No players found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination controls -->
+    <div>
+        {% if page_obj.has_previous %}
+            <a href="?page=1">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+    </div>
+</body>
+</html>
