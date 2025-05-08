@@ -1,0 +1,31 @@
+organizer: 
+1-searching *
+
+2-create tournament * 
+2.1-set if doubles or singles * 
+2.2-set if women, men, or mixed *
+
+3-Create team*
+3.2-edit team players and information* 
+
+4-start tournament (generate matches)
+
+5-edit tournament participants manually.  *test editing players in or out
+
+6-Edit generated matches manually if needed
+
+
+player:
+1-searching *
+2-enroll in tournament*
+3-watch matches / tournament results 
+
+referee:
+1-like player but add updating match results. 
+
+
+For all: 
+viewing ongoing tournaments and their matches 
+
+
+LEFT: GENERATE MATCHES, UPDATE/WATCH MATCHES 
