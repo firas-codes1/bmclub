@@ -23,6 +23,14 @@ def populate():
     TeamMatch.objects.all().delete() 
     User.objects.all().delete()  # Delete all users (be careful with this, as it will remove users)
 
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser(
+        username='admin',
+        email='admin@example.com',
+        password='admin123')
+    else:
+        pass
+
     # Users Creation
     user1 = User.objects.create_user(username="user1", password="securepassword123", first_name="Hannah", last_name="Baker", email="user1@example.com")
     user2 = User.objects.create_user(username="user2", password="securepassword123", first_name="Alex", last_name="Standal", email="user2@example.com")
@@ -73,6 +81,7 @@ def populate():
     Roles.objects.create(user=organizer7, role="organizer")
 
     # 5 Teams Creation
+    the_no_team = Team.objects.create(name="no team", TotalScores=0, TotalWins=0)
     team1 = Team.objects.create(name="Team 1", TotalScores=0, TotalWins=0)
     team2 = Team.objects.create(name="Team 2", TotalScores=0, TotalWins=0)
     team3 = Team.objects.create(name="Team 3", TotalScores=0, TotalWins=0)
@@ -127,7 +136,13 @@ def populate():
     team_match5 = TeamMatch.objects.create(team1=team3, team1Score=20, team2=team5, team2Score=22, ref=referee1, tournament=tournament5, team1wins=0, team2wins=0)
     print("database populated")
 
-
+def get_user_role_nb(request):
+    if request.user.is_authenticated:
+        role=Roles.objects.get(user=request.user)
+        role=role.role
+        return role 
+    else:
+        return 0 
 
 def authentME(usr,pwd):
     conn = sqlite3.connect("badminton.db")
@@ -149,8 +164,9 @@ def authentME(usr,pwd):
 def index(request):
     #print(request.user)
     #populate()
+    user_role=get_user_role_nb(request)
     if request.user.is_authenticated:
-        return render(request, 'index.html',{'msg':'user is authenticated'})
+        return render(request, 'index.html',{'msg':'user is authenticated',"user_role":user_role})
     return render(request, 'index.html')
 
 def login_page(request):
@@ -233,6 +249,7 @@ def Start_newmatch(request):
 
 @user_passes_test(is_organizer)
 def newmatch(request,slug):
+    user_role=get_user_role_nb(request)
     if request.method == 'GET':
         if slug=="singles":
             form=PlayerMatchForm()
@@ -267,10 +284,12 @@ def newmatch(request,slug):
 
 @user_passes_test(is_organizer)
 def newtor(request):
-    return render(request, 'newtor.html')
+    user_role=get_user_role_nb(request)
+    return render(request, 'newtor.html', {"user_role":user_role})
 
 @user_passes_test(is_organizer)
 def newtorsingles(request):
+    user_role=get_user_role_nb(request)
     if request.method == 'GET':
         form=playerTournamentf()
         return render(request, 'organize2.html',{'form': form,})
@@ -278,7 +297,7 @@ def newtorsingles(request):
     if request.method == "POST":
         form=playerTournamentf(request.POST) 
         if form.is_valid()==False:   
-            return render(request, 'organize2.html',{'form': form,'msg':'You have entered incorrect data',})
+            return render(request, 'organize2.html',{"user_role":user_role,'form': form,'msg':'You have entered incorrect data',})
         
         tournament_name = form.cleaned_data['tournament_name']
         location = form.cleaned_data['location']
@@ -290,7 +309,7 @@ def newtorsingles(request):
         tcourt=Court.objects.get(court=court)
         free=Court2Tour.objects.filter(court=court, tdate=date).exists()
         if free==True:
-            return render(request, 'organize2.html',{'form': form,'msg':'Court is reserved at the date you entered: '+str(date),})
+            return render(request, 'organize2.html',{"user_role":user_role,'form': form,'msg':'Court is reserved at the date you entered: '+str(date),})
         else:
             pass 
 
@@ -301,19 +320,20 @@ def newtorsingles(request):
         #for player in players:
         #    playerPool.objects.create(tournament=newT,player=player)
 
-        return render(request, 'organize2.html',{'form': form,'msg':'Tournament created!',})
+        return render(request, 'organize2.html',{"user_role":user_role,'form': form,'msg':'Tournament created!',})
 
 #DElete this probably
 @user_passes_test(is_organizer)
 def newtordoubles(request):
+    user_role=get_user_role_nb(request)
     if request.method == 'GET':
         form=teamTournamentf()
-        return render(request, 'organize2.html',{'form': form,})
+        return render(request, 'organize2.html',{"user_role":user_role,'form': form,})
 
     if request.method == "POST":
         form=teamTournamentf(request.POST) 
         if form.is_valid()==False:   
-            return render(request, 'organize2.html',{'form': form,'msg':'You have entered incorrect data',})
+            return render(request, 'organize2.html',{"user_role":user_role,'form': form,'msg':'You have entered incorrect data',})
 
         tournament_name = form.cleaned_data['tournament_name']
         location = form.cleaned_data['location']
@@ -324,7 +344,7 @@ def newtordoubles(request):
         tcourt=Court.objects.get(court=court)
         free=Court2Tour.objects.filter(court=court, tdate=date).exists()
         if free==True:
-            return render(request, 'organize2.html',{'form': form,'msg':'Court is reserved at the date you entered: '+str(date),})
+            return render(request, 'organize2.html',{"user_role":user_role,'form': form,'msg':'Court is reserved at the date you entered: '+str(date),})
         else:
             pass 
         
@@ -339,7 +359,7 @@ def newtordoubles(request):
                 teamPool.objects.create(tournament=newT, team=team)
 
         #create tournament, then send good msg
-        return render(request, 'organize2.html',{'form': form,'msg':'Tournament created!',})
+        return render(request, 'organize2.html',{"user_role":user_role,'form': form,'msg':'Tournament created!',})
 
 
 #Maybe add a page solely for viewing the match by players?
@@ -353,7 +373,7 @@ def updatematch(request,matchid,playerid=0):
     organizer=PlayerMatch.objects.get(id=matchid).tournament.creator 
     #ref=PlayerMatch.objects.get(id=matchid).ref
     is_referee = Roles.objects.filter(user=request.user, role='referee').exists()
-    if (request.user!=organizer) or (is_referee==False):
+    if (request.user!=organizer) and (is_referee==False):
         return render(request, "matchupdate.html", {'matchinfo':match,'msg':'You are not the organizer or a referee, you cant update results'})
     else:
         if playerid==1:
@@ -379,9 +399,14 @@ def updatematch(request,matchid,playerid=0):
 def updateteammatch(request,matchid, teamid=0,playerid=0):
     #first, ensure the user making the request is the organizer of the match 
     match = TeamMatch.objects.get(id=matchid)
+    if request.method== 'GET' and teamid==0 and playerid==0:
+        return render(request, "teammatchupdate.html", {'matchinfo':match,'msg':''})
+    else:
+        pass
     organizer=TeamMatch.objects.get(id=matchid).tournament.creator 
     ref=TeamMatch.objects.get(id=matchid).ref
-    if (request.user!=organizer) or (request.user!=ref):
+    print(request.user, organizer)
+    if (request.user!=organizer) and (request.user!=ref):
         return render(request, "teammatchupdate.html", {'matchinfo':match,'msg':'You are not the organizer, you cant update results'})
     else:
         if teamid==1:
@@ -391,19 +416,19 @@ def updateteammatch(request,matchid, teamid=0,playerid=0):
             if wincondition==21:
                 match.team1wins += 1
                 if match.team1wins==2:
-                    match.team1.player1.TotalWins += 1
-                    match.team1.player2.TotalWins += 1
+                    #match.team1.player1.TotalWins += 1
+                    #match.team1.player2.TotalWins += 1 removed after removing "player1 and 2" fields from Team table
                     match.team1.TotalSWins+=1
 
             #add the score to the player's statistics
-            if playerid==1:
+            """if playerid==1:
                 match.team1.player1.TotalScores += 1
                 match.team1.TotalScores+=1
             elif playerid==2:
                 match.team1.player2.TotalScores += 1
                 match.team1.TotalScores+=1
             else:
-                pass
+                pass"""
 
             match.save()
 
@@ -414,40 +439,43 @@ def updateteammatch(request,matchid, teamid=0,playerid=0):
             if wincondition==21:
                 match.team2wins += 1
                 if match.team2wins==2:
-                    match.team2.player1.TotalWins += 1
-                    match.team2.player2.TotalWins += 1
-                    match.team2.TotalSWins+=1
+                    #match.team2.player1.TotalWins += 1
+                    #match.team2.player2.TotalWins += 1
+                    match.team2.TotalWins+=1
 
             #add the score to the player's statistics
-            if playerid==1:
+            """if playerid==1:
                 match.team2.player1.TotalScores += 1
                 match.team2.TotalScores+=1
             elif playerid==2:
                 match.team2.player2.TotalScores += 1
                 match.team2.TotalScores+=1
             else:
-                pass
+                pass"""
 
             match.save()
         else:
             pass
-    return render(request, "teammatchupdate.html", {'matchinfo':match,'msg':''})
+    return render(request, "teammatchupdate.html", {'matchinfo':match,'msg':'updated!'})
 
 
 @login_required
 def profile_view(request):
+    user_role=get_user_role_nb(request)
     role = Roles.objects.get(user=request.user).role
     if role=="player":
         player = Player.objects.get(user=request.user)
-        return render(request, 'profile.html', {'user': request.user,'role': role, 'player':player})
+        return render(request, 'profile.html', {"user_role":user_role,'user': request.user,'role': role, 'player':player})
 
-    return render(request, 'profile.html', {'user': request.user,'role': role, 'player':None})
+    return render(request, 'profile.html', {"user_role":user_role,'user': request.user,'role': role, 'player':None})
 
 def playerview(request,playerid):
+    user_role=get_user_role_nb(request)
     player = Player.objects.get(id=playerid)
-    return render(request, 'player.html', {'player':player})
+    return render(request, 'player.html', {"user_role":user_role,'player':player})
 
 def teamview(request,teamid):
+    user_role=get_user_role_nb(request)
     team = Team.objects.get(id=teamid)
     players = Player.objects.filter(team=team)
     
@@ -463,11 +491,12 @@ def teamview(request,teamid):
         'team': team,
         'players': players,
         'matches_played': matches_played,
-        'matches_won': matches_won,
+        'matches_won': matches_won,"user_role":user_role
     })
 
 @user_passes_test(is_organizer)
 def newteam(request):
+    user_role=get_user_role_nb(request)
     if request.method == "POST":
         form = Teamform(request.POST) #instance could be an issue
         if form.is_valid():
@@ -482,18 +511,18 @@ def newteam(request):
                     player.team = team
                     player.save()
 
-            return render(request, 'newteam.html',{"form":Teamform(),'msg':'Team created!'})
+            return render(request, 'newteam.html',{"user_role":user_role,"form":Teamform(),'msg':'Team created!'})
         
         else:
-            return render(request, 'newteam.html',{"form":Teamform(),'msg':'There was an error!'})
+            return render(request, 'newteam.html',{"user_role":user_role,"form":Teamform(),'msg':'There was an error!'})
 
     else:
-        return render(request, 'newteam.html',{"form":Teamform(),'msg':''})
+        return render(request, 'newteam.html',{"user_role":user_role,"form":Teamform(),'msg':''})
 
 @user_passes_test(is_organizer)
 def editteam(request, team_id):
     team = get_object_or_404(Team, id=team_id)
-
+    user_role=get_user_role_nb(request)
     if request.method == "POST":
         form = Teamform(request.POST)
         if form.is_valid():
@@ -514,9 +543,9 @@ def editteam(request, team_id):
                     player.team = team
                     player.save()
 
-            return render(request, 'newteam.html', {"form": form, "msg": "Team updated!", "team": team})
+            return render(request, 'newteam.html', {"user_role":user_role,"form": form, "msg": "Team updated!", "team": team})
         else:
-            return render(request, 'newteam.html', {"form": form, "msg": "Form is invalid!", "team": team})
+            return render(request, 'newteam.html', {"form": form, "msg": "Form is invalid!", "team": team,"user_role":user_role})
 
     else:
         
@@ -531,9 +560,10 @@ def editteam(request, team_id):
             initial_data[f'player{i}'] = player
 
         form = Teamform(initial=initial_data)
-        return render(request, 'newteam.html', {"form": form, "msg": "", "team": team})        
+        return render(request, 'newteam.html', {"user_role":user_role,"form": form, "msg": "", "team": team})        
 
 def all_matches(request): 
+    user_role=get_user_role_nb(request)
     singles_matches = PlayerMatch.objects.prefetch_related(
     'player1__user',
     'player2__user',
@@ -551,7 +581,7 @@ def all_matches(request):
     'tournament',).all()
 
     print(doubles_matches)
-    return render(request, "all_matches.html", {
+    return render(request, "all_matches.html", {"user_role":user_role,
         "singles_matches": singles_matches,
         "doubles_matches": doubles_matches
     })
@@ -560,25 +590,31 @@ def all_matches(request):
 def player_ranking(request):
     # Order players by TotalWins descending
     players = Player.objects.all().order_by('-TotalWins')
-
+    user_role=get_user_role_nb(request)
     # Paginate with 20 per page
     paginator = Paginator(players, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'ranking.html', {'page_obj': page_obj})
+    return render(request, 'ranking.html', {'page_obj': page_obj,"user_role":user_role})
 
 @login_required
 def mytours(request):
+    user_role=get_user_role_nb(request)
     tournaments=Tournament.objects.filter(creator=request.user)
-    return render(request, "mytours.html", {'tors':tournaments})
+    return render(request, "mytours.html", {'tors':tournaments,"user_role":user_role})
 
 @login_required
 def edit_tournament(request, tournament_id):
+    user_role=get_user_role_nb(request)
     tournament = Tournament.objects.get(id=tournament_id)
     tour_court=Court.objects.filter(court2tour__tournament=tournament, 
         court2tour__tdate=tournament.date).first()
-
+    try: #court shouldnt be empty in tournament creation...
+        tour_court.court
+    except:
+        return redirect("../mytours/") #should show error, this is easier tho
+    
     #Check if the tournament is for singles 
     if (tournament.category=="menS") or (tournament.category=="womS"):
         if request.method == "POST":
@@ -588,18 +624,21 @@ def edit_tournament(request, tournament_id):
                 #check if the court is free on the selected date 
                 court=form.cleaned_data['court']
                 tdate=form.cleaned_data['date']
-                free=Court2Tour.objects.filter(court=court, tdate=tdate).exists()
-                if free==True:
+                notfree=Court2Tour.objects.filter(court=court, tdate=tdate).exists()
+                if (notfree==True) and (court==tour_court.court):
                     form = playerTournamentf(initial={'tournament_name':tournament.tournament_name, 
                     'location':tournament.location,    
                     'date':tournament.date,
                     'court':tour_court,
                     'category':tournament.category,
                     'maxparti':tournament.maxparti,})
-                    return render(request, "edit_tournament.html", {"form": form, "tournament": tournament, 'msg':'court is reserved at the date'})
+
+                    return render(request, "edit_tournament.html", {"user_role":user_role,"form": form, "tournament": tournament, 'msg':'court is reserved at the date'})
+                else:
+                    pass
 
                 #If court is not reserved on the date
-                Court2Tour.objects.filter(tournament=tournament, court=tour_court, tdate=tournament.date).delete()
+                Court2Tour.objects.filter(tournament=tournament, court=tour_court, tdate=tournament.date).delete()#delete old court=tournament record 
                 
                 tournament.tournament_name = form.cleaned_data['tournament_name']
                 tournament.location = form.cleaned_data['location']
@@ -613,15 +652,19 @@ def edit_tournament(request, tournament_id):
                 Court2Tour.objects.create(tournament=tournament,court=court,tdate=tdate)
 
                 return redirect("../mytours/")
+            else:
+                pass #it leads to returning same as a GET resquest
         else:
-            form = playerTournamentf(initial={'tournament_name':tournament.tournament_name, 
-                'location':tournament.location,    
-                'date':tournament.date,
-                'court':tour_court,
-                'category':tournament.category,
-                'maxparti':tournament.maxparti,})
+            pass #it leads to returning same as a GET request
 
-        return render(request, "edit_tournament.html", {"form": form, "tournament": tournament})
+        form = playerTournamentf(initial={'tournament_name':tournament.tournament_name, 
+            'location':tournament.location,    
+            'date':tournament.date,
+            'court':tour_court,
+            'category':tournament.category,
+            'maxparti':tournament.maxparti,})
+        
+        return render(request, "edit_tournament.html", {"user_role":user_role,"form": form, "tournament": tournament})
     
 
     else:
@@ -637,8 +680,8 @@ def edit_tournament(request, tournament_id):
                 #check if the court is free on the selected date 
                 court=form.cleaned_data['court']
                 tdate=form.cleaned_data['date']
-                free=Court2Tour.objects.filter(court=court, tdate=tdate).exists()
-                if free==True:
+                notfree=Court2Tour.objects.filter(court=court, tdate=tdate).exists()
+                if (notfree==True) and (court==tour_court.court):
                     initial_data = {
                     'tournament_name': tournament.tournament_name,
                     'location': tournament.location,
@@ -648,8 +691,9 @@ def edit_tournament(request, tournament_id):
                     }
                     initial_data.update(team_fields)
                     form = teamTournamentf(initial=initial_data)
-                    return render(request, "edit_tournament.html", {"form": form, "tournament": tournament,'msg':'court is reserved at the date'})
-            
+                    return render(request, "edit_tournament.html", {"user_role":user_role,"form": form, "tournament": tournament,'msg':'court is reserved at the date'})
+                else:
+                    pass
                 #Form is valid, court is free at the date 
                 Court2Tour.objects.filter(tournament=tournament, court=tour_court, tdate=tournament.date).delete()
   
@@ -668,21 +712,24 @@ def edit_tournament(request, tournament_id):
                     team = form.cleaned_data.get(f'team{i}')
                     if team:
                         teamPool.objects.create(tournament=tournament, team=team)
-
                 return redirect("../mytours/")
+            else:
+                pass #it leads to returning same as a GET resquest
         else:
-            initial_data = {
-                'tournament_name': tournament.tournament_name,
-                'location': tournament.location,
-                'date': tournament.date,
-                'court':tour_court,
-                'category': tournament.category,
+            pass #it leads to returning same as a GET request
+        initial_data = {
+            'tournament_name': tournament.tournament_name,
+            'location': tournament.location,
+            'date': tournament.date,
+            'court':tour_court,
+            'category': tournament.category,
             }
-            initial_data.update(team_fields)
-            form = teamTournamentf(initial=initial_data)
-            return render(request, "edit_tournament.html", {"form": form, "tournament": tournament})
+        initial_data.update(team_fields)
+        form = teamTournamentf(initial=initial_data)
+        return render(request, "edit_tournament.html", {"user_role":user_role,"form": form, "tournament": tournament})
 
 def edit_tournament_players(request,tournament_id):
+    user_role=get_user_role_nb(request)
     tournament = Tournament.objects.get(id=tournament_id)
     if (tournament.category=="menS") or (tournament.category=="womS"):
         players_approved = Player.objects.filter(playerpool__tournament=tournament)
@@ -691,7 +738,7 @@ def edit_tournament_players(request,tournament_id):
 
         return render(request, "edit_playersintour.html", 
             {"players": players_approved, "playershold":players_onhold,
-            "tournament": tournament})
+            "tournament": tournament,"user_role":user_role})
     
     else:
         #get from team pool 
@@ -699,7 +746,7 @@ def edit_tournament_players(request,tournament_id):
         #put them in a form, and the form should have additional slots for extra teams 
         return render(request, "edit_playersintour.html", 
             {"teams":teams,
-            "tournament": tournament})
+            "tournament": tournament,"user_role":user_role})
 
 def approve_player(request, tournament_id,playerid):
     print(playerid)
@@ -749,6 +796,7 @@ def edit_match(request, match_id):
     return render(request, "edit_match.html", {"form": form, "match": match})
 
 def searchteams(request,q=""):
+    user_role=get_user_role_nb(request)
     try:
         q = request.GET.get('q', '')
     except:
@@ -759,9 +807,10 @@ def searchteams(request,q=""):
     else:
         teams=Team.objects.filter(name__contains=q)
         print("search for teams with name of "+q)
-    return render(request, "searchteam.html", {"items": teams,})
+    return render(request, "searchteam.html", {"items": teams,"user_role":user_role})
 
 def searchplayers(request,q=""):
+    user_role=get_user_role_nb(request)
     try:
         q = request.GET.get('q', '')
     except:
@@ -773,20 +822,21 @@ def searchplayers(request,q=""):
         player = Player.objects.filter(
         Q(user__first_name__icontains=q) | Q(user__last_name__icontains=q))
 
-    return render(request, "search.html", {"items": player,})
+    return render(request, "search.html", {"items": player,"user_role":user_role})
 
 def seetours(request):
+    user_role=get_user_role_nb(request)
     tournaments=Tournament.objects.all()
     paginator = Paginator(tournaments, 10) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, "alltours.html", {'tors':tournaments,'page_obj': page_obj})
+    return render(request, "alltours.html", {'tors':tournaments,'page_obj': page_obj,"user_role":user_role})
 
 
 def tournament_detail(request, tournament_id):
     tournament = get_object_or_404(Tournament, id=tournament_id)
-
+    user_role=get_user_role_nb(request)
     show_enroll = False
     already_enrolled = False
     matches = []
@@ -827,10 +877,10 @@ def tournament_detail(request, tournament_id):
         'tournament': tournament,
         'show_enroll': show_enroll,
         'already_enrolled': already_enrolled,
-        'matches': matches,
+        'matches': matches,"user_role":user_role
     })
 
-def generate_matches(tournament_id):
+def generate_matches(request, tournament_id):
     tournament = Tournament.objects.get(id=tournament_id)
     players = list(playerPool.objects.filter(tournament=tournament).values_list('player', flat=True))
     random.shuffle(players)
@@ -843,15 +893,30 @@ def generate_matches(tournament_id):
         )
     return redirect('../viewtournament/'+str(tournament.id), tournament_id=tournament.id)
 
+def generate_team_matches(request, tournament_id):
+    tournament = Tournament.objects.get(id=tournament_id)
+    players = list(teamPool.objects.filter(tournament=tournament).values_list('team', flat=True))
+    random.shuffle(players)
+    for i in range(0, len(players)-1, 2):
+        TeamMatch.objects.create(
+            team1_id=players[i],
+            team2_id=players[i+1],
+            tournament=tournament,
+            duration=30,
+        )
+    return redirect('../viewtournament/'+str(tournament.id), tournament_id=tournament.id)
+
 @user_passes_test(is_organizer)
 def newcourt(request):
+    user_role=get_user_role_nb(request)
     allcourts=Court.objects.all()
     if request.method == 'POST':
         form = CourtForm(request.POST)
         if form.is_valid():
             Court.objects.create(court=form.cleaned_data['court'])
             messages.success(request, 'Court added')
-            render(request, 'add_court.html', {'form': form,'msg':'court added','courts':allcourts})
+            render(request, 'add_court.html', {'form': form,'msg':'court added','courts':allcourts,"user_role":user_role})
     else:
         form = CourtForm()
-    return render(request, 'add_court.html', {'form': form,'msg':'','courts':allcourts})
+    return render(request, 'add_court.html', {'form': form,'msg':'','courts':allcourts,"user_role":user_role})
+
