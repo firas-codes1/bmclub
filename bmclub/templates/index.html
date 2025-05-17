@@ -14,9 +14,6 @@
      {% load static %}    
 <link rel="stylesheet" href="{% static 'style.css' %}">
 
-
-</head>
-<body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
@@ -29,65 +26,35 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
            
-<li class="nav-item">
-           <a class="nav-link" href="tournaments/">all tours</a>
-       </li>
+    <!-- Always visible links -->
+    <li class="nav-item"><a href="/tournaments/" class="nav-link">Tournaments</a></li>
+    <li class="nav-item"><a href="/createteam/" class="nav-link">Teams</a></li>
+    <li class="nav-item"><a href="/newcourt/" class="nav-link">Courts</a></li>
+    
 
+    <!-- Auth-based link -->
+    {% if user.is_authenticated %}
+      <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+<li class="nav-item"><a href="searchplayer/" class="nav-link">Search players</a></li>
+<li class="nav-item"><a href="searchteam/" class="nav-link">Search teams</a></li>
+    {% else %}
+      <li class="nav-item"><a href="/accounts/login/" class="nav-link">Login</a></li>
 
-<li class="nav-item">
-           <a class="nav-link" href="newcourt/">add court</a>
-       </li>
+    {% endif %}
 
-
-<li class="nav-item">
-           <a class="nav-link" href="createteam/">create team</a>
-       </li>
-
-
-<li class="nav-item">
-           <a class="nav-link" href="searchteam/">search teams</a>
-       </li>
-
- <li class="nav-item">
-           <a class="nav-link" href="searchplayer/">search players</a>
-       </li>
-  
-                   <li class="nav-item">
-
-                        <a class="nav-link" href="mytours/">mytours/</a>
-                    </li>
-
-                   <li class="nav-item">
-
-                        <a class="nav-link" href="rankings/">rankings</a>
-                    </li>
- 
-                   <li class="nav-item">
-
-                        <a class="nav-link" href="allmatches/">all matches</a>
-                    </li>
-
-
-    <li class="nav-item">
-                        <a class="nav-link" href="newtournament">New tournament</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="newmatch">New match</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="profile/">Profile</a>
-                    </li>
-                     <li class="nav-item">
-                        <a class="nav-link" href="logout">Logout</a> <!-- if user is authenticated -->
-                    </li> 
-                    <li class="nav-item">
-                        <a class="btn btn-outline-light ms-lg-3" href="pages/login.html">Login</a>
-                    </li>
+    <!-- Organizer-only links -->
+    {% if user_role == "organizer" %}
+      <li class="nav-item"><a href="/mytours/" class="nav-link">My Tours</a></li>
+      <li class="nav-item"><a href="/newcourt/" class="nav-link">Add Court</a></li>
+      <li class="nav-item"><a href="/newtournament" class="nav-link">New Tournament</a></li>
+      <li class="nav-item"><a href="/createteam/" class="nav-link">Create Team</a></li>
+    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+</head>
+<body>
 
     <!-- Hero Section -->
     <section class="hero-section">
